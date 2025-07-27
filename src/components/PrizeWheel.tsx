@@ -60,17 +60,18 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
 
     // 计算转盘应该停止的角度
     const sectionAngle = 360 / prizes.length;
-    const targetAngle = selectedPrizeIndex * sectionAngle + (sectionAngle / 2);
-    const spins = 5 + Math.random() * 5; // 5-10圈
-    const finalRotation = spins * 360 + targetAngle;
+    // 调整目标角度，使指针指向奖项中心
+    const targetAngle = 360 - (selectedPrizeIndex * sectionAngle + (sectionAngle / 2));
+    const spins = 8 + Math.random() * 6; // 8-14圈，增加转动圈数
+    const finalRotation = rotation + spins * 360 + targetAngle;
 
     setRotation(finalRotation);
 
-    // 动画结束后显示结果
+    // 动画结束后显示结果，增加延迟时间
     setTimeout(() => {
       setIsSpinning(false);
       setResult(prizes[selectedPrizeIndex]);
-    }, 3000);
+    }, 4000);
   };
 
   const resetWheel = () => {

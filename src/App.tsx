@@ -4,6 +4,7 @@ import StudentManager from './components/StudentManager';
 import StudentLottery from './components/StudentLottery';
 import PrizeWheel from './components/PrizeWheel';
 import AnswerTracker from './components/AnswerTracker';
+import PrizeSettings from './components/PrizeSettings';
 
 export interface Student {
   id: string;
@@ -24,6 +25,7 @@ function App() {
   const [prizes, setPrizes] = useState<Prize[]>([]);
   const [currentView, setCurrentView] = useState<'students' | 'lottery' | 'wheel' | 'tracker'>('students');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [showPrizeSettings, setShowPrizeSettings] = useState(false);
 
   // 初始化默认奖项
   useEffect(() => {
@@ -88,6 +90,13 @@ function App() {
           >
             🎡 终极大转盘
           </button>
+          <button
+            className="settings-btn"
+            onClick={() => setShowPrizeSettings(true)}
+            title="奖项设置"
+          >
+            ⚙️ 设置
+          </button>
         </nav>
       </header>
 
@@ -123,6 +132,14 @@ function App() {
           />
         )}
       </main>
+
+      {showPrizeSettings && (
+        <PrizeSettings
+          prizes={prizes}
+          onUpdatePrizes={setPrizes}
+          onClose={() => setShowPrizeSettings(false)}
+        />
+      )}
     </div>
   );
 }

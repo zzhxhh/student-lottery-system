@@ -26,36 +26,44 @@ const StudentLottery: React.FC<StudentLotteryProps> = ({
 
     // 随机选择最终结果
     const finalIndex = Math.floor(Math.random() * students.length);
-    
-    // 动画效果：快速滚动然后逐渐减速
-    let currentSpeed = 50;
-    let currentIdx = 0;
-    let totalSpins = 0;
-    const maxSpins = 30 + Math.floor(Math.random() * 20); // 30-50次旋转
 
-    const spinInterval = setInterval(() => {
+    // 改进的动画效果：使用递归setTimeout实现平滑减速
+    let currentIdx = 0;
+    let spinCount = 0;
+    const totalSpins = 40 + Math.floor(Math.random() * 30); // 40-70次旋转
+    const baseSpeed = 50; // 基础速度
+
+    const animateStep = () => {
       currentIdx = (currentIdx + 1) % students.length;
       setCurrentIndex(currentIdx);
-      totalSpins++;
+      spinCount++;
 
-      // 逐渐减速
-      if (totalSpins > maxSpins * 0.7) {
-        currentSpeed += 20;
-      }
+      // 计算当前速度（逐渐减速）
+      const progress = spinCount / totalSpins;
+      const speedMultiplier = progress > 0.7 ? Math.pow((1 - progress) / 0.3, 0.5) : 1;
+      const currentSpeed = baseSpeed + (200 * (1 - speedMultiplier));
 
-      // 停止条件：达到最大旋转次数且当前索引是目标索引
-      if (totalSpins >= maxSpins && currentIdx === finalIndex) {
-        clearInterval(spinInterval);
+      // 检查是否应该停止
+      if (spinCount >= totalSpins && currentIdx === finalIndex) {
+        // 最终停止
+        setTimeout(() => {
+          setIsSpinning(false);
+          setSelectedStudent(students[finalIndex]);
+          onSelectStudent(students[finalIndex]);
+        }, 500); // 短暂延迟显示结果
+      } else if (spinCount < totalSpins + students.length) {
+        // 继续动画
+        setTimeout(animateStep, currentSpeed);
+      } else {
+        // 强制停止（防止无限循环）
         setIsSpinning(false);
         setSelectedStudent(students[finalIndex]);
         onSelectStudent(students[finalIndex]);
       }
-    }, currentSpeed);
+    };
 
-    // 清理定时器
-    setTimeout(() => {
-      clearInterval(spinInterval);
-    }, (maxSpins + 10) * currentSpeed);
+    // 开始动画
+    animateStep();
   };
 
   const resetLottery = () => {

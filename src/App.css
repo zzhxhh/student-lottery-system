@@ -52,6 +52,16 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
+.settings-btn {
+  background: rgba(255, 193, 7, 0.2) !important;
+  border: 1px solid rgba(255, 193, 7, 0.5) !important;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 193, 7, 0.3) !important;
+  border-color: rgba(255, 193, 7, 0.7) !important;
+}
+
 .app-main {
   padding: 30px;
   max-width: 1200px;
