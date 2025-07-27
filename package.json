@@ -4,7 +4,7 @@
   "private": true,
   "description": "我想要放假😭 - 一个带有哭泣表情的学生抽奖系统",
   "author": "Your Name",
-  "homepage": "https://github.com/yourusername/i-want-holiday",
+  "homepage": "./",
   "dependencies": {
     "@react-spring/web": "^10.0.1",
     "@testing-library/dom": "^10.4.0",
