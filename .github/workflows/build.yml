@@ -2,119 +2,102 @@ name: Build and Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
+    
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-
+        
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-
-    - name: Build React app
-      run: npm run build
-
-    - name: Build Electron app (macOS)
-      if: matrix.os == 'macos-latest'
-      run: npm run dist-mac
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Build Electron app (Windows)
-      if: matrix.os == 'windows-latest'
-      run: npm run dist-win
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload macOS artifacts
-      if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-app
-        path: dist/*.dmg
-
-    - name: Upload Windows artifacts
-      if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-app
-        path: dist/*.exe
-
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build React app
+        run: npm run build
+        
+      - name: Install Electron dependencies
+        run: npm install electron-is-dev
+        
+      - name: Build Electron app (macOS)
+        if: matrix.os == 'macos-latest'
+        run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build Electron app (Windows)
+        if: matrix.os == 'windows-latest'
+        run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload artifacts (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            
+      - name: Upload artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-app
+          path: |
+            dist/*.exe
+            dist/*.msi
+            
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
+    if: startsWith(github.ref, 'refs/tags/')
+    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Download macOS artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: macos-app
-        path: ./artifacts/macos/
-
-    - name: Download Windows artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: windows-app
-        path: ./artifacts/windows/
-
-    - name: List artifacts
-      run: |
-        echo "macOS artifacts:"
-        ls -la ./artifacts/macos/
-        echo "Windows artifacts:"
-        ls -la ./artifacts/windows/
-
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v${{ github.run_number }}
-        name: Release v${{ github.run_number }}
-        body: |
-          🎯 学生抽取奖励系统 - 自动构建版本
-
-          ## 🆕 最新更新
-          - 🎨 优化抽奖动画，修复bug，添加炫酷视觉效果
-          - 🎡 改进终极大转盘动画和指针设计
-          - 🛠️ 新增奖项DIY功能，支持完全自定义奖项
-          - ✨ 增强用户体验和响应式设计
-
-          ## 功能特性
-          - 👥 学生信息管理（仅需姓名）
-          - 🎲 带动画效果的学生随机抽取
-          - 📊 答题记录和统计
-          - 🎡 终极大转盘（概率随答题正确率动态调整）
-          - ⚙️ 奖项DIY设置功能
-
-          ## 下载说明
-          - **macOS**: 下载 `.dmg` 文件
-          - **Windows**: 下载 `.exe` 文件
-
-          构建时间: ${{ github.event.head_commit.timestamp }}
-          提交: ${{ github.sha }}
-        files: |
-          ./artifacts/macos/*.dmg
-          ./artifacts/windows/*.exe
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            macos-app/*
+            windows-app/*
+          body: |
+            ## 我想要放假😭 - 学生抽奖系统
+            
+            ### 新功能 ✨
+            - 🎯 智能学生抽取系统
+            - 🎡 终极大奖转盘
+            - 📊 答题记录统计
+            - 🎨 现代化界面设计
+            - 😭 哭泣表情主题
+            
+            ### 下载说明 📥
+            - **macOS**: 下载 `.dmg` 文件
+            - **Windows**: 下载 `.exe` 文件
+            
+            ### 使用方法 🚀
+            1. 添加学生名单
+            2. 开始智能抽取
+            3. 记录答题情况
+            4. 参与终极大奖抽取
+            
+            祝你早日放假！😭
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

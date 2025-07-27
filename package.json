@@ -1,17 +1,12 @@
 {
-  "name": "student-lottery-system",
-  "version": "0.1.0",
-  "description": "学生抽取和奖励系统 - 带动画效果的学生随机抽取和终极大转盘",
-  "main": "public/electron.js",
-  "homepage": "./",
+  "name": "i-want-holiday",
+  "version": "1.0.0",
   "private": true,
-  "devDependencies": {
-    "concurrently": "^7.6.0",
-    "electron": "^22.0.0",
-    "electron-builder": "^24.0.0",
-    "wait-on": "^7.0.1"
-  },
+  "description": "我想要放假😭 - 一个带有哭泣表情的学生抽奖系统",
+  "author": "Your Name",
+  "homepage": "https://github.com/yourusername/i-want-holiday",
   "dependencies": {
+    "@react-spring/web": "^10.0.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
@@ -20,13 +15,16 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "electron-is-dev": "^2.0.0",
+    "framer-motion": "^12.23.9",
+    "lucide-react": "^0.526.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-scripts": "5.0.1",
+    "react-spring": "^10.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
+  "main": "public/electron.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -34,11 +32,9 @@
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-pack": "npm run build && electron-builder",
-    "preelectron-pack": "npm run build",
+    "build-electron": "npm run build && electron-builder",
     "dist": "npm run build && electron-builder --publish=never",
-    "dist-win": "npm run build && electron-builder --win --publish=never",
-    "dist-mac": "npm run build && electron-builder --mac --publish=never"
+    "pack": "npm run build && electron-builder --dir"
   },
   "eslintConfig": {
     "extends": [
@@ -58,15 +54,22 @@
       "last 1 safari version"
     ]
   },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^32.2.7",
+    "electron-builder": "^25.1.8",
+    "wait-on": "^8.0.1"
+  },
   "build": {
-    "appId": "com.studentlottery.system",
-    "productName": "学生抽取奖励系统",
+    "appId": "com.yourname.i-want-holiday",
+    "productName": "我想要放假😭",
     "directories": {
       "output": "dist"
     },
     "files": [
       "build/**/*",
       "public/electron.js",
+      "public/preload.js",
       "node_modules/**/*"
     ],
     "mac": {
@@ -74,26 +77,34 @@
       "target": [
         {
           "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
+          "arch": ["x64", "arm64"]
         }
-      ]
+      ],
+      "icon": "build/icon.icns"
     },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
-      ]
+      ],
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.png"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }
