@@ -18,26 +18,42 @@ function createWindow() {
       enableRemoteModule: false,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'icon.png'), // 应用图标
     titleBarStyle: 'default',
     show: false // 先不显示，等加载完成后再显示
   });
 
-  // 加载应用
-  const startUrl = isDev 
-    ? 'http://localhost:3000' 
-    : `file://${path.join(__dirname, '../build/index.html')}`;
-  
+  // 加载应用 - 修复生产环境路径问题
+  let startUrl;
+  if (isDev) {
+    startUrl = 'http://localhost:3000';
+  } else {
+    // 在打包后的应用中，build文件夹与electron.js在同一目录
+    startUrl = `file://${path.join(__dirname, 'build/index.html')}`;
+  }
+
+  console.log('Loading URL:', startUrl);
+  console.log('__dirname:', __dirname);
+  console.log('isDev:', isDev);
+
   mainWindow.loadURL(startUrl);
+
+  // 添加加载失败的处理
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error('Failed to load:', validatedURL, errorCode, errorDescription);
+    // 如果是生产环境且加载失败，尝试备用路径
+    if (!isDev && errorCode !== 0) {
+      const fallbackUrl = `file://${path.join(__dirname, '../build/index.html')}`;
+      console.log('Trying fallback URL:', fallbackUrl);
+      mainWindow.loadURL(fallbackUrl);
+    }
+  });
 
   // 窗口加载完成后显示
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-    
-    // 开发模式下打开开发者工具
-    if (isDev) {
-      mainWindow.webContents.openDevTools();
-    }
+
+    // 总是打开开发者工具以便调试问题
+    mainWindow.webContents.openDevTools();
   });
 
   // 当窗口关闭时触发
