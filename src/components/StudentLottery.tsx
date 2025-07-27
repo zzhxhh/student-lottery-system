@@ -152,16 +152,6 @@ const StudentLottery: React.FC<StudentLotteryProps> = ({
                     >
                       {student.name.charAt(0)}
                     </text>
-                    <text
-                      x={textX}
-                      y={textY + 35}
-                      textAnchor="middle"
-                      fontSize="10"
-                      fill="#666"
-                      className="student-name-svg"
-                    >
-                      {student.name.length > 6 ? student.name.substring(0, 6) + '...' : student.name}
-                    </text>
                   </g>
                 );
               })}

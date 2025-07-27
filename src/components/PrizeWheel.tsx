@@ -50,18 +50,30 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
     const random = Math.random();
     const isWin = random < winProbability;
 
-    // 计算转盘旋转角度
+    // 转盘角度计算说明：
+    // - 指针固定在12点方向（顶部）
+    // - 绿色中奖区域：右半边，从3点到9点方向（90度到270度）
+    // - 红色未中奖区域：左半边，从9点到3点方向（270度到90度，跨越0度）
+    // - 我们需要让转盘旋转，使得指针最终指向对应的区域
+
     let targetAngle;
     if (isWin) {
-      // 中奖区域：0-120度（绿色区域）
-      targetAngle = Math.random() * 120;
+      // 中奖：让指针指向绿色区域（90度到270度）
+      targetAngle = 90 + Math.random() * 180;
     } else {
-      // 未中奖区域：120-360度（红色区域）
-      targetAngle = 120 + Math.random() * 240;
+      // 未中奖：让指针指向红色区域（270度到450度，即270度到90度）
+      const randomInRedZone = Math.random() * 180; // 0到180度的随机值
+      if (randomInRedZone < 90) {
+        targetAngle = 270 + randomInRedZone; // 270度到360度
+      } else {
+        targetAngle = randomInRedZone - 90; // 0度到90度
+      }
     }
 
+    // 计算最终旋转角度：多转几圈 + 让指针指向目标区域
     const spins = 8 + Math.random() * 4; // 8-12圈
-    const finalRotation = spins * 360 + targetAngle;
+    // 由于指针固定，我们旋转转盘，所以目标角度需要反向
+    const finalRotation = spins * 360 + (360 - targetAngle);
 
     setRotation(finalRotation);
 
@@ -134,17 +146,17 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
               height="400"
               viewBox="0 0 400 400"
             >
-              {/* 中奖区域 (0-120度, 绿色) */}
+              {/* 绿色中奖区域：从-60度到+60度（以12点为0度，120度扇形） */}
               <path
-                d="M 200 200 L 200 20 A 180 180 0 0 1 356.41 290 Z"
+                d="M 200 200 L 290 46.41 A 180 180 0 0 1 290 353.59 Z"
                 fill="#4CAF50"
                 stroke="#fff"
                 strokeWidth="3"
               />
 
-              {/* 未中奖区域 (120-360度, 红色) */}
+              {/* 红色未中奖区域：从+60度到-60度（240度扇形） */}
               <path
-                d="M 200 200 L 356.41 290 A 180 180 0 1 1 200 20 Z"
+                d="M 200 200 L 290 353.59 A 180 180 0 1 1 290 46.41 Z"
                 fill="#F44336"
                 stroke="#fff"
                 strokeWidth="3"
@@ -152,21 +164,20 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
 
               {/* 中奖区域文字 */}
               <text
-                x="280"
-                y="150"
+                x="320"
+                y="200"
                 textAnchor="middle"
                 fontSize="24"
                 fontWeight="bold"
                 fill="white"
-                transform="rotate(60 280 150)"
               >
                 🎉 中奖
               </text>
 
               {/* 未中奖区域文字 */}
               <text
-                x="200"
-                y="320"
+                x="120"
+                y="200"
                 textAnchor="middle"
                 fontSize="24"
                 fontWeight="bold"
