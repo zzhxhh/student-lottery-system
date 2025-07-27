@@ -9,49 +9,49 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-        
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-      
+      uses: actions/checkout@v4
+
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-        
+
     - name: Install dependencies
       run: npm ci
-      
+
     - name: Build React app
       run: npm run build
-      
+
     - name: Build Electron app (macOS)
       if: matrix.os == 'macos-latest'
       run: npm run dist-mac
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+
     - name: Build Electron app (Windows)
       if: matrix.os == 'windows-latest'
       run: npm run dist-win
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+
     - name: Upload macOS artifacts
       if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: macos-app
         path: dist/*.dmg
-        
+
     - name: Upload Windows artifacts
       if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-app
         path: dist/*.exe
@@ -60,65 +60,61 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-      
+      uses: actions/checkout@v4
+
     - name: Download macOS artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: macos-app
         path: ./artifacts/macos/
-        
+
     - name: Download Windows artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: windows-app
         path: ./artifacts/windows/
-        
+
+    - name: List artifacts
+      run: |
+        echo "macOS artifacts:"
+        ls -la ./artifacts/macos/
+        echo "Windows artifacts:"
+        ls -la ./artifacts/windows/
+
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ github.run_number }}
-        release_name: Release v${{ github.run_number }}
+        name: Release v${{ github.run_number }}
         body: |
           🎯 学生抽取奖励系统 - 自动构建版本
-          
+
+          ## 🆕 最新更新
+          - 🎨 优化抽奖动画，修复bug，添加炫酷视觉效果
+          - 🎡 改进终极大转盘动画和指针设计
+          - 🛠️ 新增奖项DIY功能，支持完全自定义奖项
+          - ✨ 增强用户体验和响应式设计
+
           ## 功能特性
           - 👥 学生信息管理（仅需姓名）
           - 🎲 带动画效果的学生随机抽取
           - 📊 答题记录和统计
           - 🎡 终极大转盘（概率随答题正确率动态调整）
-          
+          - ⚙️ 奖项DIY设置功能
+
           ## 下载说明
           - **macOS**: 下载 `.dmg` 文件
           - **Windows**: 下载 `.exe` 文件
-          
+
           构建时间: ${{ github.event.head_commit.timestamp }}
           提交: ${{ github.sha }}
+        files: |
+          ./artifacts/macos/*.dmg
+          ./artifacts/windows/*.exe
         draft: false
         prerelease: false
-        
-    - name: Upload macOS Release Asset
-      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/macos/
-        asset_name: StudentLotterySystem-macOS.dmg
-        asset_content_type: application/octet-stream
-        
-    - name: Upload Windows Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./artifacts/windows/
-        asset_name: StudentLotterySystem-Windows.exe
-        asset_content_type: application/octet-stream
