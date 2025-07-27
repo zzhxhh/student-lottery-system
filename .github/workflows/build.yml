@@ -23,22 +23,29 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm cache clean --force
+          npm install --legacy-peer-deps
 
       - name: Build React app
         run: npm run build
         
       - name: Build Electron app (macOS)
         if: matrix.os == 'macos-latest'
-        run: npm run dist
+        run: |
+          npm run build
+          npx electron-builder --mac --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Build Electron app (Windows)
         if: matrix.os == 'windows-latest'
-        run: npm run dist
+        run: |
+          npm run build
+          npx electron-builder --win --publish=never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
