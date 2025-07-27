@@ -58,6 +58,7 @@
     "concurrently": "^8.2.2",
     "electron": "^32.2.7",
     "electron-builder": "^25.1.8",
+    "electron-is-dev": "^2.0.0",
     "wait-on": "^8.0.1"
   },
   "build": {
@@ -79,8 +80,7 @@
           "target": "dmg",
           "arch": ["x64", "arm64"]
         }
-      ],
-      "icon": "build/icon.icns"
+      ]
     },
     "win": {
       "target": [
@@ -88,8 +88,7 @@
           "target": "nsis",
           "arch": ["x64"]
         }
-      ],
-      "icon": "build/icon.ico"
+      ]
     },
     "linux": {
       "target": [
@@ -97,8 +96,7 @@
           "target": "AppImage",
           "arch": ["x64"]
         }
-      ],
-      "icon": "build/icon.png"
+      ]
     },
     "nsis": {
       "oneClick": false,
