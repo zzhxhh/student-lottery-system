@@ -1,0 +1,360 @@
+.prize-wheel {
+  width: 100%;
+}
+
+.wheel-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.wheel-header h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 2.5rem;
+}
+
+.wheel-header p {
+  margin: 0;
+  color: #666;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.wheel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.student-selector-wheel h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.student-select {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.student-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.wheel-container {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.wheel-wrapper {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.wheel.spinning {
+  transition: transform 3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.wheel-section {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: 100% 100%;
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-content {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  transform-origin: 0 100%;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 80px;
+}
+
+.prize-name {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.prize-probability {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  color: #333;
+  z-index: 10;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.spin-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spin-button:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.spin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spin-button.spinning {
+  animation: spinButton 1s linear infinite;
+}
+
+.wheel-result {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.result-card {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 400px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+  animation: resultAppear 0.8s ease-out;
+}
+
+.result-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+}
+
+.prize-result {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.prize-icon {
+  font-size: 3rem;
+}
+
+.prize-info h2 {
+  margin: 0 0 5px 0;
+  font-size: 1.8rem;
+}
+
+.prize-info p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.probability-display {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 25px;
+}
+
+.probability-display h4 {
+  margin: 0 0 20px 0;
+  color: #333;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.probability-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.probability-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.probability-item .prize-name {
+  min-width: 80px;
+  font-weight: 600;
+  color: #333;
+}
+
+.probability-bar {
+  flex: 1;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.probability-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.probability-text {
+  min-width: 50px;
+  text-align: right;
+  font-weight: 600;
+  color: #333;
+}
+
+.bonus-info {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.bonus-info p {
+  margin: 5px 0;
+}
+
+.empty-wheel {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-wheel h2 {
+  margin: 0 0 10px 0;
+  color: #999;
+}
+
+.empty-wheel p {
+  margin: 0;
+  color: #bbb;
+}
+
+/* 动画 */
+@keyframes spinButton {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes resultAppear {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .wheel-header h2 {
+    font-size: 2rem;
+  }
+  
+  .wheel-wrapper {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .section-content {
+    width: 60px;
+    font-size: 0.8rem;
+  }
+  
+  .prize-name {
+    font-size: 0.8rem;
+  }
+  
+  .prize-probability {
+    font-size: 0.7rem;
+  }
+  
+  .prize-result {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .probability-item {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .probability-bar {
+    width: 100%;
+  }
+  
+  .probability-text {
+    text-align: center;
+  }
+}
