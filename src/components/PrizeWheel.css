@@ -385,3 +385,83 @@
     text-align: center;
   }
 }
+
+/* 终极转盘样式 */
+.ultimate-wheel-container {
+  position: relative;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.ultimate-wheel {
+  border-radius: 50%;
+  transition: transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+  background: #fff;
+}
+
+.ultimate-wheel.spinning {
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.3));
+}
+
+.ultimate-spin-button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.ultimate-spin-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.ultimate-spin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ultimate-spin-button.spinning {
+  animation: pulse 1s ease-in-out infinite alternate;
+}
+
+.center-text {
+  pointer-events: none;
+}
+
+.result-card.win {
+  border-left: 5px solid #4CAF50;
+  background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%);
+}
+
+.result-card.lose {
+  border-left: 5px solid #F44336;
+  background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+}
+
+.ultimate-probability .probability-fill.win {
+  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+}
+
+.ultimate-probability .probability-fill.lose {
+  background: linear-gradient(135deg, #F44336 0%, #EF5350 100%);
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}

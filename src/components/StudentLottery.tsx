@@ -82,38 +82,101 @@ const StudentLottery: React.FC<StudentLotteryProps> = ({
         <div className="lottery-display">
           <div className="wheel-container">
             <div className="wheel-pointer">▼</div>
-            <div
-              className={`real-wheel ${isSpinning ? 'spinning' : ''}`}
+            <svg
+              className={`wheel-svg ${isSpinning ? 'spinning' : ''}`}
               style={{ transform: `rotate(${wheelRotation}deg)` }}
+              width="400"
+              height="400"
+              viewBox="0 0 400 400"
             >
               {students.map((student, index) => {
                 const sectionAngle = 360 / students.length;
-                const rotation = index * sectionAngle;
-                const colors = ['#667eea', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f', '#bb8fce', '#85c1e9'];
+                const startAngle = index * sectionAngle;
+                const endAngle = (index + 1) * sectionAngle;
+
+                // 计算扇形路径
+                const centerX = 200;
+                const centerY = 200;
+                const radius = 180;
+
+                const startAngleRad = (startAngle * Math.PI) / 180;
+                const endAngleRad = (endAngle * Math.PI) / 180;
+
+                const x1 = centerX + radius * Math.cos(startAngleRad);
+                const y1 = centerY + radius * Math.sin(startAngleRad);
+                const x2 = centerX + radius * Math.cos(endAngleRad);
+                const y2 = centerY + radius * Math.sin(endAngleRad);
+
+                const largeArcFlag = sectionAngle > 180 ? 1 : 0;
+
+                const pathData = [
+                  `M ${centerX} ${centerY}`,
+                  `L ${x1} ${y1}`,
+                  `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                  'Z'
+                ].join(' ');
+
+                const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'];
+
+                // 计算文字位置
+                const textAngle = startAngle + sectionAngle / 2;
+                const textAngleRad = (textAngle * Math.PI) / 180;
+                const textRadius = radius * 0.7;
+                const textX = centerX + textRadius * Math.cos(textAngleRad);
+                const textY = centerY + textRadius * Math.sin(textAngleRad);
+
                 return (
-                  <div
-                    key={student.id}
-                    className="wheel-section"
-                    style={{
-                      transform: `rotate(${rotation}deg)`,
-                      background: `conic-gradient(from 0deg, ${colors[index % colors.length]} 0deg, ${colors[index % colors.length]} ${sectionAngle}deg, transparent ${sectionAngle}deg)`,
-                      clipPath: `polygon(50% 50%, 50% 0%, ${50 + 50 * Math.sin((sectionAngle * Math.PI) / 180)}% ${50 - 50 * Math.cos((sectionAngle * Math.PI) / 180)}%)`
-                    }}
-                  >
-                    <div
-                      className="section-content"
-                      style={{
-                        transform: `rotate(${sectionAngle / 2}deg) translateY(-80px)`,
-                      }}
+                  <g key={student.id}>
+                    <path
+                      d={pathData}
+                      fill={colors[index % colors.length]}
+                      stroke="#fff"
+                      strokeWidth="2"
+                      className="wheel-section-svg"
+                    />
+                    <circle
+                      cx={textX}
+                      cy={textY}
+                      r="25"
+                      fill="rgba(255,255,255,0.9)"
+                      stroke="rgba(0,0,0,0.1)"
+                      strokeWidth="1"
+                    />
+                    <text
+                      x={textX}
+                      y={textY + 6}
+                      textAnchor="middle"
+                      fontSize="16"
+                      fontWeight="bold"
+                      fill="#333"
                     >
-                      <div className="student-avatar">{student.name.charAt(0)}</div>
-                      <div className="student-name">{student.name}</div>
-                    </div>
-                  </div>
+                      {student.name.charAt(0)}
+                    </text>
+                    <text
+                      x={textX}
+                      y={textY + 35}
+                      textAnchor="middle"
+                      fontSize="10"
+                      fill="#666"
+                      className="student-name-svg"
+                    >
+                      {student.name.length > 6 ? student.name.substring(0, 6) + '...' : student.name}
+                    </text>
+                  </g>
                 );
               })}
-            </div>
-            <div className="wheel-center-dot"></div>
+
+              {/* 中心圆 */}
+              <circle
+                cx="200"
+                cy="200"
+                r="30"
+                fill="#FFD700"
+                stroke="#FFA500"
+                strokeWidth="3"
+                className="wheel-center-svg"
+              />
+            </svg>
           </div>
         </div>
 

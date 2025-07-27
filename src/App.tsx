@@ -113,7 +113,6 @@ function App() {
         {currentView === 'wheel' && (
           <PrizeWheel
             students={students}
-            prizes={prizes}
             selectedStudent={selectedStudent}
           />
         )}
