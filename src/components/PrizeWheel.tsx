@@ -18,11 +18,12 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
   const [result, setResult] = useState<Prize | null>(null);
   const [rotation, setRotation] = useState(0);
 
-  const calculateProbabilities = (student: Student | null) => {
-    if (!student) return prizes.map(p => p.baseProbability);
-    
+  const calculateProbabilities = () => {
+    // 计算全班总答对题数
+    const totalCorrectAnswers = students.reduce((sum, student) => sum + student.correctAnswers, 0);
+
     return prizes.map(prize => {
-      const bonus = student.correctAnswers * prize.bonusPerCorrect;
+      const bonus = totalCorrectAnswers * prize.bonusPerCorrect;
       return Math.min(prize.baseProbability + bonus, 1); // 最大概率不超过100%
     });
   };
@@ -42,7 +43,7 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
     setResult(null);
 
     // 计算概率
-    const rawProbabilities = calculateProbabilities(currentStudent);
+    const rawProbabilities = calculateProbabilities();
     const normalizedProbabilities = normalizeProbabilities(rawProbabilities);
 
     // 根据概率选择奖项
@@ -157,9 +158,7 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
                     >
                       <span className="prize-name">{prize.name}</span>
                       <span className="prize-probability">
-                        {currentStudent 
-                          ? Math.round(calculateProbabilities(currentStudent)[index] * 100)
-                          : Math.round(prize.baseProbability * 100)}%
+                        {Math.round(calculateProbabilities()[index] * 100)}%
                       </span>
                     </div>
                   </div>
@@ -196,37 +195,35 @@ const PrizeWheel: React.FC<PrizeWheelProps> = ({
             </div>
           )}
 
-          {currentStudent && (
-            <div className="probability-display">
-              <h4>当前概率分布</h4>
-              <div className="probability-list">
-                {prizes.map((prize, index) => {
-                  const probability = calculateProbabilities(currentStudent)[index];
-                  return (
-                    <div key={prize.id} className="probability-item">
-                      <span className="prize-name">{prize.name}</span>
-                      <div className="probability-bar">
-                        <div 
-                          className="probability-fill"
-                          style={{ 
-                            width: `${probability * 100}%`,
-                            backgroundColor: colors[index]
-                          }}
-                        />
-                      </div>
-                      <span className="probability-text">
-                        {Math.round(probability * 100)}%
-                      </span>
+          <div className="probability-display">
+            <h4>当前概率分布</h4>
+            <div className="probability-list">
+              {prizes.map((prize, index) => {
+                const probability = calculateProbabilities()[index];
+                return (
+                  <div key={prize.id} className="probability-item">
+                    <span className="prize-name">{prize.name}</span>
+                    <div className="probability-bar">
+                      <div
+                        className="probability-fill"
+                        style={{
+                          width: `${probability * 100}%`,
+                          backgroundColor: colors[index]
+                        }}
+                      />
                     </div>
-                  );
-                })}
-              </div>
-              <div className="bonus-info">
-                <p>💡 提示: 每答对一题，各奖项概率会相应增加！</p>
-                <p>📊 {currentStudent.name} 已答对 {currentStudent.correctAnswers} 题</p>
-              </div>
+                    <span className="probability-text">
+                      {Math.round(probability * 100)}%
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-          )}
+            <div className="bonus-info">
+              <p>💡 提示: 全班答对题目越多，各奖项概率越高！</p>
+              <p>📊 全班已答对 {students.reduce((sum, s) => sum + s.correctAnswers, 0)} 题</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

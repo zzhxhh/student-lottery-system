@@ -3,7 +3,6 @@ import './App.css';
 import StudentManager from './components/StudentManager';
 import StudentLottery from './components/StudentLottery';
 import PrizeWheel from './components/PrizeWheel';
-import AnswerTracker from './components/AnswerTracker';
 import PrizeSettings from './components/PrizeSettings';
 
 export interface Student {
@@ -23,7 +22,7 @@ export interface Prize {
 function App() {
   const [students, setStudents] = useState<Student[]>([]);
   const [prizes, setPrizes] = useState<Prize[]>([]);
-  const [currentView, setCurrentView] = useState<'students' | 'lottery' | 'wheel' | 'tracker'>('students');
+  const [currentView, setCurrentView] = useState<'students' | 'lottery' | 'wheel'>('students');
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showPrizeSettings, setShowPrizeSettings] = useState(false);
 
@@ -79,12 +78,6 @@ function App() {
             🎲 学生抽取
           </button>
           <button
-            className={currentView === 'tracker' ? 'active' : ''}
-            onClick={() => setCurrentView('tracker')}
-          >
-            📊 答题记录
-          </button>
-          <button
             className={currentView === 'wheel' ? 'active' : ''}
             onClick={() => setCurrentView('wheel')}
           >
@@ -113,13 +106,6 @@ function App() {
           <StudentLottery
             students={students}
             onSelectStudent={setSelectedStudent}
-          />
-        )}
-
-        {currentView === 'tracker' && (
-          <AnswerTracker
-            students={students}
-            selectedStudent={selectedStudent}
             onUpdateAnswer={updateStudentAnswer}
           />
         )}

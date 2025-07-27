@@ -25,72 +25,101 @@
   margin-bottom: 40px;
 }
 
-.student-wheel {
+.wheel-container {
   position: relative;
-  width: 350px;
-  height: 350px;
-  border-radius: 50%;
-  border: 10px solid transparent;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-clip: padding-box;
-  box-shadow:
-    0 0 30px rgba(102, 126, 234, 0.3),
-    inset 0 0 30px rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  width: 400px;
+  height: 400px;
 }
 
-.student-wheel::before {
-  content: '';
+.wheel-pointer {
   position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
+  color: #FFD700;
+  z-index: 10;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(255, 215, 0, 0.8);
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));
+  animation: pointerGlow 2s ease-in-out infinite alternate;
+}
+
+.real-wheel {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
-  background-size: 300% 300%;
-  animation: gradientShift 3s ease infinite;
-  z-index: -1;
-}
-
-.student-wheel.spinning {
-  animation: spinWheel 0.1s linear infinite;
+  position: relative;
+  overflow: hidden;
   box-shadow:
-    0 0 50px rgba(102, 126, 234, 0.6),
-    inset 0 0 30px rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    0 0 0 8px rgba(255, 255, 255, 0.1),
+    0 0 0 16px rgba(102, 126, 234, 0.1);
+  transition: transform 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.student-wheel.spinning::before {
-  animation: gradientShift 0.5s ease infinite, spinGlow 0.1s linear infinite;
+.real-wheel.spinning {
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 8px rgba(255, 255, 255, 0.2),
+    0 0 0 16px rgba(102, 126, 234, 0.2),
+    0 0 50px rgba(102, 126, 234, 0.4);
 }
 
-.wheel-center {
+.wheel-section {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform-origin: 50% 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.section-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.student-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 auto 5px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.student-name {
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.wheel-center-dot {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 180px;
-  height: 180px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  width: 30px;
+  height: 30px;
+  background: #FFD700;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.2),
-    inset 0 2px 10px rgba(255, 255, 255, 0.8);
+    0 0 10px rgba(255, 215, 0, 0.8),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3);
   z-index: 10;
-  border: 3px solid rgba(255, 255, 255, 0.9);
-  transition: all 0.3s ease;
-}
-
-.student-wheel.spinning .wheel-center {
-  box-shadow:
-    0 15px 40px rgba(0, 0, 0, 0.3),
-    inset 0 2px 15px rgba(255, 255, 255, 0.9),
-    0 0 20px rgba(102, 126, 234, 0.4);
-  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .current-student {
@@ -224,6 +253,39 @@
   opacity: 0.9;
 }
 
+.answer-buttons {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.answer-buttons h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.answer-btn {
+  font-size: 1.1rem;
+  padding: 12px 25px;
+  min-width: 140px;
+  border-radius: 25px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.answer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
 .lottery-controls {
   display: flex;
   justify-content: center;
@@ -355,26 +417,49 @@
   50% { transform: scale(1.05); }
 }
 
+@keyframes pointerGlow {
+  from {
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.5),
+      0 0 10px rgba(255, 215, 0, 0.8);
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));
+  }
+  to {
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(255, 215, 0, 1);
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.9));
+  }
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .lottery-header h2 {
     font-size: 2rem;
   }
   
-  .student-wheel {
-    width: 280px;
-    height: 280px;
+  .wheel-container {
+    width: 300px;
+    height: 300px;
   }
 
-  .wheel-center {
-    width: 140px;
-    height: 140px;
+  .real-wheel {
+    width: 100%;
+    height: 100%;
   }
 
-  .student-avatar-large {
-    width: 70px;
-    height: 70px;
-    font-size: 1.8rem;
+  .section-content {
+    transform: rotate(0deg) translateY(-50px) !important;
+  }
+
+  .student-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  .student-name {
+    font-size: 0.7rem;
   }
   
   .winner-card {
